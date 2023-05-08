@@ -8,16 +8,25 @@
             <div class="login-box">
                 <form method="post">
                     <div class="user-box">
-                      <input type="text" name="username" required="">
-                      <label>Username</label>
+                        <input type="text" name="username" required="">
+                        <label>Username</label>
                     </div>
                     <div class="user-box">
-                      <input type="password" name="password" required="">
-                      <label>Password</label>
+                        <input type="password" name="password" required="">
+                        <label>Password</label>
+                    </div>
+
+                    <div class="">
+                        <label>Role</label>
+                        <select name="role" required="">
+                            <option value="instructor">Instructor</option>
+                            <option value="student">Student</option>
+                        </select>
+                      
                     </div><center>
                     <button type="submit">Register</button></center>
                 </form>
-            </div>    
+            </div>
         </div>
     </div>
 {% endblock %}

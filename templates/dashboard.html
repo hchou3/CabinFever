@@ -1,16 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Dashboard</h1>
-    <form method="post">
-        <label for="question">Submit a Question:</label>
-        <textarea name="question" required></textarea>
-        <button type="submit">Submit</button>
-    </form>
-    <h2>Your Questions</h2>
-    <ul>
-        {% for question in questions %}
-            <li>{{ question.content }}</li>
-        {% endfor %}
-    </ul>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard_style.css') }}">
+    <div class="dashboard">
+        <h1 class="welcome">Dashboard</h1>
+        {% if user.role == 'instructor' %}
+            <a href="{{ url_for('create_course') }}">Create Course</a>
+        {% endif %}
+        <h2>Your Courses</h2>
+        <ul>
+            {% for course in courses %}
+                <li>
+                    <a href="{{ url_for('course_detail', course_id=course.id) }}">{{ course.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <h2>Available Courses</h2>
+        <ul>
+            {% for course in all_courses %}
+                {% if course not in courses %}
+                    <li>
+                        <a href="{{ url_for('course_detail', course_id=course.id) }}">{{ course.name }}</a>
+                        <a href="{{ url_for('enroll', course_id=course.id) }}" class="enroll button">Enroll</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

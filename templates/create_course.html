@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='create_course_style.css') }}">
+    <div class="create_course">
+        <h1>Create Course</h1>
+        <form method="post">
+            <div class="course-box">
+                <input type="text" name="course_name" required="">
+                <label>Course Name</label>
+            </div><center>
+            <button type="submit">Create Course</button></center>
+        </form>
+    </div>
+{% endblock %}

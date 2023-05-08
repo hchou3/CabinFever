@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, abort
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -40,9 +40,10 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        role = request.form['role']
         hashed_password = generate_password_hash(password, method='sha256')
 
-        user = User(username=username, password=hashed_password)
+        user = User(username=username, password=hashed_password, role=role)
         db.session.add(user)
         db.session.commit()
 
@@ -65,20 +66,48 @@ def login():
 
     return render_template('login.html')
 
-# @app.route('/dashboard', methods=['GET', 'POST'])
-# def dashboard():
-#     if 'user_id' not in session:
-#         flash('Please log in to access the dashboard.')
-#         return redirect(url_for('login'))
 
-#     if request.method == 'POST':
-#         question_content = request.form['question']
-#         question = Question(content=question_content, user_id=session['user_id'])
-#         db.session.add(question)
-#         db.session.commit()
+def is_instructor(user_id):
+    user = User.query.get(user_id)
+    return user.role == 'instructor'
 
-#     user = User.query.get(session['user_id'])
-#     return render_template('dashboard.html', questions=user.questions)
+@app.route('/dashboard')
+def dashboard():
+    user = User.query.get(session['user_id'])
+    if not user:
+        abort(403)
+
+    courses = user.courses_enrolled
+    all_courses = Course.query.all()
+    return render_template('dashboard.html', user=user, courses=courses, all_courses=all_courses)
+
+@app.route('/create_course', methods=['GET', 'POST'])
+def create_course():
+    if not is_instructor(session['user_id']):
+        abort(403)
+
+    return render_template('create_course.html')
+
+    # Implement course creation 
+
+@app.route('/create_question/<int:course_id>', methods=['GET', 'POST'])
+def create_question(course_id):
+    if not is_instructor(session['user_id']):
+        abort(403)
+
+    # Implement question creation 
+
+@app.route('/start_question/<int:course_id>/<int:question_id>')
+def start_question(course_id, question_id):
+    if not is_instructor(session['user_id']):
+        abort(403)
+
+    # Implement starting question 
+
+@app.route('/stop_question/<int:course_id>/<int:question_id>')
+def stop_question(course_id, question_id):
+    if not is_instructor(session['user_id']):
+        abort(403)
 
 
 if __name__ == '__main__':
