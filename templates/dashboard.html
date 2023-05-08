@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Dashboard</h1>
+    <form method="post">
+        <label for="question">Submit a Question:</label>
+        <textarea name="question" required></textarea>
+        <button type="submit">Submit</button>
+    </form>
+    <h2>Your Questions</h2>
+    <ul>
+        {% for question in questions %}
+            <li>{{ question.content }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
