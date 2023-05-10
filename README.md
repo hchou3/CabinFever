@@ -4,8 +4,7 @@ TopHat Alternative
 
 A website based off of tophat. Our website uses python's flask to route the different pages and sqlalchemy (SQLLite) to store all necessary data into our database.
 
-Once a user reaches our index page ("/") the user can sign up or login to an existing account. 
-NOTE: Website doesn't have instructors/students yet and needs implementation
+Once a user reaches our index page ("/") the user can sign up (and specify if the user is an instructor or student) or login to an existing account (with the preferences already predetermined). 
 
 Project requirements:
 - User accounts

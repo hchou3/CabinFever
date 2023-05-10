@@ -6,3 +6,129 @@
     color: white;
     padding: 2%;
 }
+
+.nav {
+    background-color: #190061;
+    display: flex;
+    align-items: center;
+    padding: 2%;
+}
+
+.title {
+    color: white;
+}
+
+li {
+    display: inline;
+    /* margin-right: 20px; */
+}
+
+.front_text {
+    font-size: 12pt;
+}
+
+.create_course_button {
+    width: 10em;
+    position: relative;
+    height: 3.5em;
+    border: 3px ridge #149CEA;
+    outline: none;
+    background-color: transparent;
+    color: white;
+    transition: 1s;
+    border-radius: 0.3em;
+    font-size: 16px;
+    font-weight: bold;
+    float: right;
+  }
+  
+  .create_course_button::after {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 3%;
+    width: 95%;
+    height: 40%;
+    background-color: #190061;
+    transition: 0.5s;
+    transform-origin: center;
+  }
+  
+  .create_course_button::before {
+    content: "";
+    transform-origin: center;
+    position: absolute;
+    top: 80%;
+    left: 3%;
+    width: 95%;
+    height: 40%;
+    background-color: #190061;
+    transition: 0.5s;
+  }
+  
+  .create_course_button:hover::before, .create_course_button:hover::after {
+    transform: scale(0)
+  }
+  
+  .create_course_button:hover {
+    box-shadow: inset 0px 0px 25px #1479EA;
+  }
+
+  .button {
+    max-width: 320px;
+    display: flex;
+    padding: 0.5rem 1.4rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 700;
+    text-align: center;
+    vertical-align: middle;
+    align-items: center;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    gap: 0.75rem;
+    color: rgb(65, 63, 63);
+    background-color: #fff;
+    cursor: pointer;
+    transition: all .6s ease;
+  }
+  
+  .button:hover {
+    transform: scale(1.02);
+  }
+
+  .dropbtn {
+    background-color: #1479EA;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+  }
+  
+  .dropdown {
+    position: relative;
+    display: inline-block;
+    padding: .5%;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .dropdown-content a:hover {background-color: #ddd;}
+  
+  .dropdown:hover .dropdown-content {display: block;}
+  
+  .dropdown:hover .dropbtn {background-color: #1479EA;}

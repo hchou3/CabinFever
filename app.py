@@ -25,15 +25,10 @@ class User(db.Model):
     role = db.Column(db.String(15), nullable=False)
     courses_enrolled = db.relationship('Course', secondary=enrollments, backref=db.backref('students', lazy=True))
 
-def create_tables():
-    with app.app_context():
-        db.create_all()
-
 
 @app.route('/')
 def home():
     return render_template('index.html')
-
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -66,11 +61,6 @@ def login():
 
     return render_template('login.html')
 
-
-def is_instructor(user_id):
-    user = User.query.get(user_id)
-    return user.role == 'instructor'
-
 @app.route('/dashboard')
 def dashboard():
     user = User.query.get(session['user_id'])
@@ -81,14 +71,51 @@ def dashboard():
     all_courses = Course.query.all()
     return render_template('dashboard.html', user=user, courses=courses, all_courses=all_courses)
 
+def is_instructor(user_id):
+    user = User.query.get(user_id)
+    return user.role == 'instructor'
+
 @app.route('/create_course', methods=['GET', 'POST'])
 def create_course():
     if not is_instructor(session['user_id']):
         abort(403)
 
+    if request.method == 'POST':
+        course_name = request.form.get('name')
+        
+        if not course_name:
+            flash('Course name is required.')
+            return redirect(url_for('create_course'))
+
+        instructor_id = session['user_id']
+
+        course = Course(name=course_name, instructor_id=instructor_id)
+        db.session.add(course)
+        db.session.commit()
+
+        return redirect(url_for('dashboard'))
+
     return render_template('create_course.html')
 
-    # Implement course creation 
+@app.route('/course_detail/<int:course_id>')
+def course_detail(course_id):
+    course = Course.query.get_or_404(course_id)
+    return render_template('course_detail.html', course=course)
+
+@app.route('/enroll/<int:course_id>', methods=['POST'])
+def enroll(course_id):
+    course = Course.query.get_or_404(course_id)
+    user = User.query.get(session['user_id'])
+
+    if user in course.students:
+        flash('You are already enrolled in this course.')
+    else:
+        course.students.append(user)
+        db.session.commit()
+        flash('You have successfully enrolled in the course.')
+
+    return redirect(url_for('course_detail', course_id=course_id))
+
 
 @app.route('/create_question/<int:course_id>', methods=['GET', 'POST'])
 def create_question(course_id):
@@ -108,6 +135,12 @@ def start_question(course_id, question_id):
 def stop_question(course_id, question_id):
     if not is_instructor(session['user_id']):
         abort(403)
+
+    # Implement stopping question 
+
+def create_tables():
+    with app.app_context():
+        db.create_all()
 
 
 if __name__ == '__main__':

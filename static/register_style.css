@@ -24,6 +24,14 @@
     color: white;
 }
 
+.register {
+    color: white;
+}
+
+.register_box {
+    padding-bottom: 5%;
+}
+
 button {
     position: relative;
     padding: 10px 20px;
