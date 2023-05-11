@@ -4,9 +4,23 @@
     <h1>{{ course.name }}</h1>
     <p>Instructor: {{ course.instructor.username }}</p>
     <p>Students:</p>
-    <ul>
+    <ol>
         {% for student in course.students %}
             <li>{{ student.username }}</li>
         {% endfor %}
-    </ul>
+    </ol>
+
+    {% if user not in course.students and user.role == 'student' %}
+        <form method="POST" action="{{ url_for('enroll', course_id=course.id) }}">
+            <button type="submit">Enroll in this course</button>
+        </form>
+    {% endif %}
+
+    {% if user.role == 'instructor' %}
+    <form method="POST" action="">
+        <input type="text">
+        <button>Create Question</button>
+    </form>
+    {% endif %}
+
 {% endblock %}
