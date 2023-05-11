@@ -3,12 +3,14 @@
 {% block content %}
     <h1>{{ course.name }}</h1>
     <p>Instructor: {{ course.instructor.username }}</p>
-    <p>Students:</p>
-    <ol>
-        {% for student in course.students %}
-            <li>{{ student.username }}</li>
-        {% endfor %}
-    </ol>
+    {% if user.role == 'instructor' %}
+        <p>Students:</p>
+        <ol>
+            {% for student in course.students %}
+                <li>{{ student.username }}</li>
+            {% endfor %}
+        </ol>
+    {% endif %}
 
     {% if user not in course.students and user.role == 'student' %}
         <form method="POST" action="{{ url_for('enroll', course_id=course.id) }}">
@@ -17,10 +19,23 @@
     {% endif %}
 
     {% if user.role == 'instructor' %}
-    <form method="POST" action="">
-        <input type="text">
-        <button>Create Question</button>
+    <form method="POST">
+        <label for="text">Question:</label><br>
+        <input type="text" id="text" name="text"><br>
+        <label for="answers">Answers:</label><br>
+        A: <input type="text" id="answers" name="answers"><br>
+        B: <input type="text" id="answers" name="answers"><br>
+        C: <input type="text" id="answers" name="answers"><br>
+        D: <input type="text" id="answers" name="answers"><br>
+        <label for="correct_answer">Correct Answer:</label><br>
+        <select id="correct_answer" name="correct_answer">
+            <option value="0">A</option>
+            <option value="1">B</option>
+            <option value="2">C</option>
+            <option value="3">D</option>
+        </select><br>
+        <input type="submit" value="Create Question">
     </form>
-    {% endif %}
+{% endif %}
 
 {% endblock %}
