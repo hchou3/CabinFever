@@ -6,35 +6,44 @@
         <h1 class="welcome">Dashboard</h1>
         <nav class="nav">
 
-                <div class="dropdown">
-                    <button class="dropbtn button my_courses">Your Courses</button>
-                    <div class="dropdown-content">
-                        {% for course in courses %}
-                            <a href="{{ url_for('course_detail', course_id=course.id) }}">{{ course.name }}</a>
-                        {% endfor %}
-                        <a href="{{ url_for('my_courses') }}">View All Courses</a>
-                    </div>
+            <div class="dropdown">
+                <button class="dropbtn button my_courses">My Courses</button>
+                <div class="dropdown-content">
+                    {% for course in all_courses %}
+                        {% if course not in courses and user.id == course.instructor_id %}
+                            <a href="{{ url_for('course_detail', course_id=course.id) }}">{{ course.name }}</a>          
+                        {% endif %}
+                    {% endfor %}
                 </div>
+            </div>
 
-                <div class="dropdown">
-                    <button class="dropbtn button available">Available Courses</button>
-                    <div class="dropdown-content">
-                        {% for course in all_courses %}
-                            {% if course not in courses %}
-                                <a href="{{ url_for('course_detail', course_id=course.id) }}">{{ course.name }}</a>          
-                            {% endif %}
-                        {% endfor %}
-                        <a href="{{ url_for('available_courses') }}">View All Courses</a>
-                    </div>
+            <div class="dropdown">
+                <button class="dropbtn button enrolled_courses">Enrolled Courses</button>
+                <div class="dropdown-content">
+                    {% for course in courses %}
+                        <a href="{{ url_for('course_detail', course_id=course.id) }}">{{ course.name }}</a>
+                    {% endfor %}
                 </div>
+            </div>
 
-                <a href="{{ url_for('my_grades') }}"><button class="dropbtn button">My Grades</button></a>
+            <div class="dropdown">
+                <button class="dropbtn button available">Available Courses</button>
+                <div class="dropdown-content">
+                    {% for course in all_courses %}
+                        {% if course not in courses and user.id != course.instructor_id %}
+                            <a href="{{ url_for('course_detail', course_id=course.id) }}">{{ course.name }}</a>          
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>            
 
-                <button class="create_course_button">
-                    <span class="shadow"></span>
-                    <span class="edge"></span>
-                    <span class="front_text">Create a Course</span>
-                </button>
+            <a href="{{ url_for('my_grades') }}"><button class="dropbtn button">My Grades</button></a>
+
+            <button class="create_course_button">
+                <span class="shadow"></span>
+                <span class="edge"></span>
+                <span class="front_text">Create a Course</span>
+            </button>
         </nav>
     </div>
 
@@ -49,6 +58,10 @@
 
         document.querySelector('.my_courses').addEventListener('click', function() {
             window.location.href = "{{ url_for('my_courses') }}";
+        });
+
+        document.querySelector('.enrolled_courses').addEventListener('click', function() {
+            window.location.href = "{{ url_for('enrolled_courses') }}";
         });
     </script>
     
