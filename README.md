@@ -19,7 +19,8 @@ Project requirements:
 - (Websockets) Questions
 
 Project imports:
-- Flask==2.1.1
-- Flask-SQLAlchemy==2.5.1
-- Flask-SocketIO==6.1.1
-- Werkzeug==2.0.3
+- Flask==2.0.1
+- Flask-SocketIO==5.1.1
+- Flask-SQLAlchemy==2.4
+- SQLAlchemy==1.3.24
+- Werkzeug==2.0.1

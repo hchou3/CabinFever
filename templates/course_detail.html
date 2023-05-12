@@ -3,39 +3,57 @@
 {% block content %}
     <h1>{{ course.name }}</h1>
     <p>Instructor: {{ course.instructor.username }}</p>
-    {% if user.role == 'instructor' %}
+
         <p>Students:</p>
         <ol>
             {% for student in course.students %}
                 <li>{{ student.username }}</li>
             {% endfor %}
         </ol>
-    {% endif %}
 
-    {% if user not in course.students and user.role == 'student' %}
         <form method="POST" action="{{ url_for('enroll', course_id=course.id) }}">
             <button type="submit">Enroll in this course</button>
         </form>
-    {% endif %}
 
-    {% if user.role == 'instructor' %}
-    <form method="POST">
+    <form method="POST" action="{{ url_for('create_question', course_id=course_id) }}">
         <label for="text">Question:</label><br>
         <input type="text" id="text" name="text"><br>
         <label for="answers">Answers:</label><br>
-        A: <input type="text" id="answers" name="answers"><br>
-        B: <input type="text" id="answers" name="answers"><br>
-        C: <input type="text" id="answers" name="answers"><br>
-        D: <input type="text" id="answers" name="answers"><br>
+        A: <input type="text" id="answerA" name="answerA"><br>
+        B: <input type="text" id="answerB" name="answerB"><br>
+        C: <input type="text" id="answerC" name="answerC"><br>
+        D: <input type="text" id="answerD" name="answerD"><br>
         <label for="correct_answer">Correct Answer:</label><br>
         <select id="correct_answer" name="correct_answer">
-            <option value="0">A</option>
-            <option value="1">B</option>
-            <option value="2">C</option>
-            <option value="3">D</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
         </select><br>
         <input type="submit" value="Create Question">
     </form>
-{% endif %}
+
+        <div id="questionContainer">
+            <h3>Current Question:</h3>
+            {% if question %}
+                <p>{{ question.text }}</p>
+            {% else %}
+                <p>No active question at the moment.</p>
+            {% endif %}
+        </div>
+    
+        <div id="answerContainer">
+            {% if question %}
+                <form action="{{ url_for('submit_answer', course_id=course_id, question_id=question.id) }}" method="post">
+                    {% for answer in question.answers %}
+                        <input type="radio" id="answer{{ loop.index }}" name="answer" value="{{ answer.id }}">
+                        <label for="answer{{ loop.index }}">{{ answer.text }}</label><br>
+                    {% endfor %}
+                </form>
+            {% else %}
+                <p>Answer options will appear here when a question is active.</p>
+            {% endif %}
+        </div>
 
 {% endblock %}
+

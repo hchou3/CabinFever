@@ -2,12 +2,17 @@
 
 {% block content %}
     <link rel="stylesheet" href="{{ url_for('static', filename='create_course_style.css') }}">
-    <h1>Create Course</h1>
-    <form method="post">
-        <div>
-            <label for="name">Course Name:</label>
-            <input type="text" id="name" name="name" required>
-        </div>
-        <button type="submit">Create Course</button>
-    </form>
+    <div class="dashboard">
+        <h1 class="title">Create Course</h1>
+        <form method="post">
+            <div class="course_creation">
+                <div>
+                    <label for="name" class="course_name">Course Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <button type="submit" class="button">Create Course</button>
+            </div>
+        </form>
+    </div>
 {% endblock %}
+

@@ -22,6 +22,10 @@ option {
     padding-top: 5%;
 }
 
+a {
+  text-decoration: none;
+}
+
 .front_text {
     font-size: 12pt;
 }

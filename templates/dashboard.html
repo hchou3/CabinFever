@@ -6,7 +6,6 @@
         <h1 class="welcome">Dashboard</h1>
         <nav class="nav">
 
-            {% if user.role == 'instructor' %} 
                 <div class="dropdown">
                     <button class="dropbtn button my_courses">Your Courses</button>
                     <div class="dropdown-content">
@@ -16,21 +15,7 @@
                         <a href="{{ url_for('my_courses') }}">View All Courses</a>
                     </div>
                 </div>
-            {% endif %}
 
-            {% if user.role == 'student' %}
-                <div class="dropdown">
-                    <button class="dropbtn button my_courses">Your Courses</button>
-                    <div class="dropdown-content">
-                        {% for course in courses %}
-                            <a href="{{ url_for('course_detail', course_id=course.id) }}">{{ course.name }}</a>
-                        {% endfor %}
-                        <a href="{{ url_for('my_courses') }}">View All Courses</a>
-                    </div>
-                </div>
-            {% endif %}
-
-            {% if user.role == 'student' %}
                 <div class="dropdown">
                     <button class="dropbtn button available">Available Courses</button>
                     <div class="dropdown-content">
@@ -42,15 +27,14 @@
                         <a href="{{ url_for('available_courses') }}">View All Courses</a>
                     </div>
                 </div>
-            {% endif %}
 
-            {% if user.role == 'instructor' %}
+                <a href="{{ url_for('my_grades') }}"><button class="dropbtn button">My Grades</button></a>
+
                 <button class="create_course_button">
                     <span class="shadow"></span>
                     <span class="edge"></span>
                     <span class="front_text">Create a Course</span>
                 </button>
-            {% endif %}
         </nav>
     </div>
 
