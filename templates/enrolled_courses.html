@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Enrolled Courses</h1>
+    <ol>
+        {% for course in enrolled_courses %}
+            <li><a href="{{ url_for('course_detail', course_id=course.id) }}">{{ course.name }}</a></li>
+        {% endfor %}
+    </ol>
+{% endblock %}

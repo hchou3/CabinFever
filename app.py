@@ -98,7 +98,7 @@ def my_courses():
     if not user:
         abort(403)
 
-    courses = user.courses_enrolled
+    courses = Course.query.filter_by(instructor_id=user.id).all()
 
     return render_template('my_courses.html', courses=courses, user=user)
 
@@ -108,10 +108,21 @@ def available_courses():
     if not user:
         abort(403)
 
-    all_courses = Course.query.all()
+    all_courses = Course.query.filter(Course.instructor_id != user.id).all()
     enrolled_courses = user.courses_enrolled
 
     return render_template('available_courses.html', all_courses=all_courses, enrolled_courses=enrolled_courses)
+
+@app.route('/enrolled_courses')
+def enrolled_courses():
+    user = User.query.get(session['user_id'])
+    if not user:
+        abort(403)
+
+    enrolled_courses = user.courses_enrolled
+
+    return render_template('enrolled_courses.html', enrolled_courses=enrolled_courses, user=user)
+
 
 @app.route('/create_course', methods=['GET', 'POST'])
 def create_course():
@@ -123,14 +134,18 @@ def create_course():
             return redirect(url_for('create_course'))
 
         instructor_id = session['user_id']
+        instructor = User.query.get(instructor_id)
 
         course = Course(name=course_name, instructor_id=instructor_id)
+        instructor.courses_enrolled.append(course)
+
         db.session.add(course)
         db.session.commit()
 
         return redirect(url_for('dashboard'))
 
     return render_template('create_course.html')
+
 
 @app.route('/gradebook/<int:course_id>')
 def gradebook(course_id):
@@ -158,7 +173,9 @@ def enroll(course_id):
     course = Course.query.get_or_404(course_id)
     user = User.query.get(session['user_id'])
 
-    if user in course.students:
+    if user.id == course.instructor_id:
+        flash('You are the instructor for this course and cannot enroll.')
+    elif user in course.students:
         flash('You are already enrolled in this course.')
     else:
         course.students.append(user)
@@ -169,6 +186,13 @@ def enroll(course_id):
 
 @app.route('/create_question/<int:course_id>', methods=['GET', 'POST'])
 def create_question(course_id):
+    course = Course.query.get_or_404(course_id)
+    user = User.query.get(session['user_id'])
+
+    if user.id != course.instructor_id:
+        flash('Only the instructor of the course can create questions.')
+        return redirect(url_for('course_detail', course_id=course_id))
+
     if request.method == 'POST':
         question_text = request.form.get('text')
         answers = {
