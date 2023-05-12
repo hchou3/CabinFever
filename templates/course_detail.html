@@ -1,55 +1,95 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>{{ course.name }}</h1>
-    <p>Instructor: {{ course.instructor.username }}</p>
+    <link rel="stylesheet" href="{{ url_for('static', filename='course_detail_style.css') }}">
+    <div class="title_box">
+        <h1 class="title">{{ course.name }}</h1>
+    </div>
 
-    <p>Students:</p>
-    <ol>
-        {% for student in course.students %}
-            <li>{{ student.username }}</li>
-        {% endfor %}
-    </ol>
+    <div class="body">
+        <div class="names">
+            <p class="instructor">Instructor: {{ course.instructor.username }}</p>
 
-    {% if user in course.students %}
-        <div id="questionContainer">
-            <h3>Current Question:</h3>
-            {% if question %}
-                <p>{{ question.text }}</p>
-                <div id="answerContainer">
-                    <form action="{{ url_for('submit_answer', course_id=course_id, question_id=question.id) }}" method="post">
-                        {% for answer in question.answers %}
-                            <input type="radio" id="answer{{ loop.index }}" name="answer" value="{{ answer.id }}">
-                            <label for="answer{{ loop.index }}">{{ answer.text }}</label><br>
-                        {% endfor %}
-                        <input type="submit" value="Submit Answer">
-                    </form>
-                </div>
-            {% else %}
-                <p>No active question at the moment.</p>
-            {% endif %}
+            <div class="student">
+                <p>Students:</p>
+                <ol>
+                    {% for student in course.students %}
+                        <li>{{ student.username }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
         </div>
-    {% elif user.id == course.instructor_id %}
-        <form method="POST" action="{{ url_for('create_question', course_id=course_id) }}">
-            <label for="text">Question:</label><br>
-            <input type="text" id="text" name="text"><br>
-            <label for="answers">Answers:</label><br>
-            A: <input type="text" id="answerA" name="answerA"><br>
-            B: <input type="text" id="answerB" name="answerB"><br>
-            C: <input type="text" id="answerC" name="answerC"><br>
-            D: <input type="text" id="answerD" name="answerD"><br>
-            <label for="correct_answer">Correct Answer:</label><br>
-            <select id="correct_answer" name="correct_answer">
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="D">D</option>
-            </select><br>
-            <input type="submit" value="Create Question">
-        </form>
-    {% else %}
-        <form method="POST" action="{{ url_for('enroll', course_id=course.id) }}">
-            <button type="submit">Enroll in this course</button>
-        </form>
-    {% endif %}
+
+        <hr>
+
+        {% if user in course.students %}
+            <div id="question_container">
+                <h3 class="current_question">Current Question:</h3>
+                {% if question %}
+                    <p class="current_question">{{ question.text }}</p>
+                    <div id="answer_container">
+                        <form action="{{ url_for('submit_answer', course_id=course_id, question_id=question.id) }}" method="post">
+                            {% for answer in question.answers %}
+                                <input type="radio" id="answer{{ loop.index }}" name="answer" value="{{ answer.id }}">
+                                <label for="answer{{ loop.index }}">{{ answer.text }}</label><br>
+                            {% endfor %}
+                            <input type="submit" value="Submit Answer">
+                        </form>
+                    </div>
+                {% else %}
+                    <p class="statement">No active question at the moment.</p>
+                {% endif %}
+            </div>
+
+        {% elif user.id == course.instructor_id %}
+            <div class="question_box">
+                <form method="POST" action="{{ url_for('create_question', course_id=course_id) }}">
+                    <div class="question_option">
+                        <label for="text" class="current_question">Question:</label>
+                        <input type="text" id="text" name="text" class="input_box">
+                    </div>
+                    
+                    <label for="answers" class="answers">Answers:</label><br>
+
+                    <div class="answer-option">
+                        <label for="answerA"><span>A:</span></label>
+                        <input type="text" id="answerA" name="answerA" class="input_box">
+                    </div>
+
+                    <div class="answer-option">
+                        <label for="answerB"><span>B:</span></label>
+                        <input type="text" id="answerB" name="answerB" class="input_box">
+                    </div>
+
+                    <div class="answer-option">
+                        <label for="answerC"><span>C:</span></label>
+                        <input type="text" id="answerC" name="answerC" class="input_box">
+                    </div>
+
+                    <div class="answer-option">
+                        <label for="answerD"><span>D:</span></label>
+                        <input type="text" id="answerD" name="answerD" class="input_box">
+                    </div>
+                    <div class="answer-option">
+                        <label for="correct_answer" class="names">Correct Answer:</label>
+                        <select id="correct_answer" name="correct_answer">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+        {% else %}
+            <form method="POST" action="{{ url_for('enroll', course_id=course.id) }}">
+                <button type="submit">Enroll in this course</button>
+            </form>
+        {% endif %}
+
+    </div>
+
+    <!-- implement a way to view grades -->
+
 {% endblock %}

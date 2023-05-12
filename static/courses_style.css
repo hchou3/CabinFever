@@ -1,0 +1,19 @@
+.title {
+    color: white;
+    text-align: center;
+}
+
+.title_box {
+    background-color: #3500D3;
+    padding: 1%;
+}
+
+.courses {
+    color: white;
+    margin-bottom: 1.5%;
+}
+
+.courses_box {
+    background-color: #190061;
+    padding: 4%;
+}

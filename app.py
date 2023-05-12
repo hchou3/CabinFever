@@ -15,14 +15,12 @@ class Course(db.Model):
     name = db.Column(db.String(80), nullable=False)
     instructor_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     instructor = db.relationship('User', backref=db.backref('courses_taught', lazy=True))
-
     students = db.relationship('User', secondary='enrollments', back_populates='courses_enrolled')
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
-
     courses_enrolled = db.relationship('Course', secondary='enrollments', back_populates='students')
 
 class Question(db.Model):
@@ -92,7 +90,6 @@ def dashboard():
 
 @app.route('/my_courses')
 def my_courses():
-
 
     user = User.query.get(session['user_id'])
     if not user:

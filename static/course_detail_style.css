@@ -1,0 +1,71 @@
+.title {
+    color: white;
+    text-align: center;
+}
+
+.title_box {
+    background-color: #3500D3;
+    padding: 1%;
+    margin-top: 1%;
+}
+
+.names {
+    color: white;
+}
+
+.body {
+    background-color: #190061;
+}
+
+option {
+    color: white;
+}
+
+.answers {
+    padding-left: 2%;
+    color: white;
+}
+
+.question_option {
+    padding-bottom: 1%;
+}
+
+.answer-option {
+    color: white;
+    padding-left: 2%;
+    padding-bottom: 1%;
+}
+
+.instructor {
+    padding-top: 2%;
+    padding-left: 2%;
+}
+
+.student {
+    padding-left: 2%;
+}
+
+.current_question {
+    color: white;
+    padding-left: 2%;
+}
+
+.statement {
+    color: white;
+    padding-left: 2%;
+    padding-bottom: 2%;
+}
+
+.input_box {
+    /* position: absolute; */
+    width: auto;
+}
+
+.question_option, .answer-option {
+    display: flex;
+    /* align-items: center; */
+}
+
+.input_box {
+    margin-left: 1rem;
+}

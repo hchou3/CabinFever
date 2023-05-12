@@ -1,10 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Enrolled Courses</h1>
-    <ol>
-        {% for course in enrolled_courses %}
-            <li><a href="{{ url_for('course_detail', course_id=course.id) }}">{{ course.name }}</a></li>
-        {% endfor %}
-    </ol>
+    <link rel="stylesheet" href="{{ url_for('static', filename='courses_style.css') }}">
+    <div class="title_box">
+        <h1 class="title">Enrolled Courses</h1>
+    </div>
+
+    <div class="courses_box">
+        <ol>
+            {% for course in enrolled_courses %}
+                <li class="courses">
+                    <a href="{{ url_for('course_detail', course_id=course.id) }}"><button>{{ course.name }}</button></a>
+                </li>
+            {% endfor %}
+        </ol>
+    </div>
+    
 {% endblock %}
