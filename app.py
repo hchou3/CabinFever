@@ -2,11 +2,12 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_socketio import SocketIO, join_room, emit
+from datetime import timedelta
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '315-at-165'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tophat.db'
-db = SQLAlchemy(app)
+db = SQLAlchemy(app) 
 socketio = SocketIO(app)
 
 class Course(db.Model):
@@ -65,6 +66,9 @@ def login():
 
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
+            session.permanent = True
+            app.permanent_session_lifetime = timedelta(hours=24)
+
             return redirect(url_for('dashboard'))
         else:
             flash('Invalid username or password.')
@@ -73,6 +77,10 @@ def login():
 
 @app.route('/dashboard')
 def dashboard():
+    user_id = session.get('user_id')
+    if user_id is None:
+        return redirect(url_for('login'))
+    
     user = User.query.get(session['user_id'])
     if not user:
         abort(403)
@@ -84,6 +92,8 @@ def dashboard():
 
 @app.route('/my_courses')
 def my_courses():
+
+
     user = User.query.get(session['user_id'])
     if not user:
         abort(403)
@@ -187,6 +197,13 @@ def create_question(course_id):
         return redirect(url_for('course_detail', course_id=course_id))
 
     return render_template('create_question.html', course_id=course_id)
+
+#This code will ensure that the session lifetime is updated before each request, effectively logging out users who have been inactive for 1 hour.
+@app.before_request
+def before_request():
+    session.permanent = True
+    app.permanent_session_lifetime = timedelta(hours=1)
+    session.modified = True
 
 
 def create_tables():
