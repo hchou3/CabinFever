@@ -69,3 +69,7 @@ option {
 .input_box {
     margin-left: 1rem;
 }
+
+.answerInput {
+    color: white;
+}

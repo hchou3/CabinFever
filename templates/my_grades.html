@@ -2,8 +2,30 @@
 
 {% block content %}
 
+<link rel="stylesheet" href="{{ url_for('static', filename='my_grades.css') }}">
 <div>
     <h1>My Grades</h1>
+{% if graded_questions %}
+    <div id="my_grades_container">
+        {% for course, qa_list in graded_questions.items() %}
+            <h2 id="courseName">Graded questions for: {{ course.name }} </div>
+            <ol>
+                {% for qa in qa_list %}
+                    <li id="courseGrade">
+                        Question Text: {{ qa.question.text }}<br>
+                        Correct Answer: {{ qa.question.correct_answer }}<br>
+                        Correct Answer Text: {{ qa.correct_ans.text }}<br>
+                        Your Answer: {{ qa.answer.choice_abc }}<br>
+                        Your Answer Text: {{ qa.answer.text }}<br>
+                        Grade: {{ qa.grade }}<br>
+                    </li>
+                {% endfor %}
+            </ol>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="statement">No active question at the moment.</p>
+{% endif %}
 </div>
 
 {% endblock %}

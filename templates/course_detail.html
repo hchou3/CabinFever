@@ -2,6 +2,54 @@
 
 {% block content %}
     <link rel="stylesheet" href="{{ url_for('static', filename='course_detail_style.css') }}">
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+        var socket = io();
+        socket.on('connect', function() {
+            socket.emit('join', {
+                'rooms': ['course_{{ course.id }}', 'user_{{ user.id }}']
+            });
+        });
+
+        socket.on('answer_result', function(data) {
+            document.getElementById('submitForm').innerHTML = '<font color="white">Answer Submitted</font>';
+            console.log('Answer result:', data);
+            if (data['grade'] === 100) {
+                alert('Correct!');
+            } else {
+                alert('Incorrect!');
+            }
+        })
+
+        socket.on('new_question', function(data) {
+            console.log('New question:', data);
+            document.getElementById('question_container').innerHTML = `
+                <h3 class="current_question">Current Question:</h3>
+                <p class="current_question">${data['text']}</p>
+                <div id="answer_container">
+                    <form id="submitForm">
+                        ${Object.entries(data['answers']).map((answer, index) => `
+                            <input type="radio" id="answer${answer[0]}" name="answer" value="${answer[0]}">
+                            <label class="answerInput" for="answer${answer[0]}">${answer[1]}</label><br>
+                        `).join('')}
+                        <input type="submit" value="Submit Answer">
+                    </form>
+                </div>
+            `;
+        })
+
+        socket.on('question_stopped', function(data) {
+            console.log('Question stopped:', data);
+            if (document.getElementById('question_container') !== null) {
+                document.getElementById('question_container').innerHTML = `
+                    <h3 class="current_question">Current Question:</h3>
+                    <p class="statement">No active question at the moment.</p>
+                `;
+            }
+            alert('All active questions have been stopped!');
+        })
+
+    </script>
     <div class="title_box">
         <h1 class="title">{{ course.name }}</h1>
     </div>
@@ -28,10 +76,10 @@
                 {% if question %}
                     <p class="current_question">{{ question.text }}</p>
                     <div id="answer_container">
-                        <form action="{{ url_for('submit_answer', course_id=course_id, question_id=question.id) }}" method="post">
+                        <form id="submitForm">
                             {% for answer in question.answers %}
                                 <input type="radio" id="answer{{ loop.index }}" name="answer" value="{{ answer.id }}">
-                                <label for="answer{{ loop.index }}">{{ answer.text }}</label><br>
+                                <label class="answerInput" for="answer{{ loop.index }}">{{ answer.text }}</label><br>
                             {% endfor %}
                             <input type="submit" value="Submit Answer">
                         </form>
@@ -40,6 +88,33 @@
                     <p class="statement">No active question at the moment.</p>
                 {% endif %}
             </div>
+            <script>
+                function getSelectedRadio(radioInputs) {
+                    for (const radio of radioInputs) {
+                        if (radio.checked) {
+                            return radio;
+                        }
+                    }
+                    return null; // Return null if no radio is selected
+                }
+                if (document.forms['submitForm']) {
+                    document.forms['submitForm'].addEventListener('submit', (event) => {
+                        event.preventDefault();
+                        const submitForm = document.getElementById('submitForm');
+                        const radioInputs = submitForm.querySelectorAll('input[type="radio"]');
+
+                        // Usage: Get the selected radio input
+                        const selectedRadio = getSelectedRadio(radioInputs);
+                        if (selectedRadio) {
+                            console.log('Selected radio:', selectedRadio.value);
+                            socket.emit('submit_answer', {'user_id': '{{ user.id }}', 'question_id': '{{ question.id }}', 'answer_id': selectedRadio.value});
+                        } else {
+                            alert('No answer is selected');
+                            console.log('No radio is selected');
+                        }
+                    })
+                }
+            </script>
 
         {% elif user.id == course.instructor_id %}
             <div class="question_box">
@@ -78,8 +153,18 @@
                             <option value="C">C</option>
                             <option value="D">D</option>
                         </select>
+                        <input type="submit" value="Start Question">
                     </div>
                 </form>
+                <input id="stopButton" type="submit" value="Stop Question">
+                <script>
+                    if (document.getElementById('stopButton') !== null) {
+                        console.log('Stop button exists');
+                        document.getElementById('stopButton').addEventListener('click', () => {
+                            socket.emit('stop_question', {'course_id': '{{ course.id }}'});
+                        })
+                    }
+                </script>
             </div>
 
         {% else %}
