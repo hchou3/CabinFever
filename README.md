@@ -2,6 +2,8 @@
 
 TopHat Alternative
 
+**Deployed URL:** http://cse312.does.yoga
+
 A website based off of tophat. Our website uses python's flask to route the different pages and sqlalchemy (SQLLite) to store all necessary data into our database.
 
 Once a user reaches our index page ("/") the user can sign up (and specify whether the user is an instructor or student) or login to an existing account (with the preferences already predetermined). 
